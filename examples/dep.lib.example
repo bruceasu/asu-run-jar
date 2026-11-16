@@ -1,0 +1,62 @@
+# dep.lib 文件示例
+# 
+# 这个文件用于管理项目的 JAR 依赖
+# 支持三种格式，完全兼容 Windows 和 Linux/Mac 路径
+#
+# 1. Maven 坐标格式（推荐）✅
+#    格式：groupId:artifactId:version
+#    工具会自动从本地 Maven 仓库查找，如果不存在则从 Maven 中央仓库下载
+#
+# 2. 绝对路径（跨平台）✅
+#    直接指定 JAR 文件的完整路径
+#    支持 Windows (C:\、D:\) 和 Linux/Mac (/) 格式
+#
+# 3. 相对路径（跨平台）✅
+#    相对于项目根目录的路径
+
+# ========== Maven 坐标格式示例 ==========
+
+# JSON 处理
+com.google.code.gson:gson:2.10.1
+
+# Apache Commons 工具类
+org.apache.commons:commons-lang3:3.12.0
+
+# IO 工具
+commons-io:commons-io:2.11.0
+
+# ========== Windows 绝对路径示例 ==========
+
+# Windows 反斜杠路径（自动识别）
+# C:\libs\custom-lib.jar
+# D:\projects\libs\my-library.jar
+
+# Windows 正斜杠路径（也支持）
+# C:/libs/another-lib.jar
+# E:/java-libs/util.jar
+
+# ========== Linux/Mac 绝对路径示例 ==========
+
+# Linux/Mac 路径（以 / 开头自动识别）
+# /home/user/libs/custom-lib.jar
+# /usr/local/share/java/my-lib.jar
+# /opt/java/libs/utils.jar
+
+# ========== 相对路径示例（跨平台）==========
+
+# 项目本地库
+# libs/local-dependency.jar
+
+# 父目录共享库
+# ../shared-libs/common.jar
+
+# 子目录
+# external/third-party/lib.jar
+
+# ========== 注意事项 ==========
+# 
+# ✅ 工具会智能区分 Maven 坐标和文件路径
+# ✅ Windows 盘符路径（C:、D: 等）不会被误认为 Maven 坐标
+# ✅ 支持注释（# 开头的行会被忽略）
+# ✅ 空行会被忽略
+# ✅ 所有路径格式可以在同一个文件中混合使用

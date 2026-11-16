@@ -1,141 +1,79 @@
-# asu-run-jar
+# ajava
 
-`asu-run-jar` is a lightweight Java launcher written in Go.
-It is designed to run applications packaged with **[asu-java-build](https://github.com/bruceasu/asu-java-build)**, automatically detecting whether a JAR is standalone, fat-JAR, or dependency-aware, and running it with the correct classpath.
-
----
+`ajava` runs Java source files and builds Java applications from the command line. It supports single-file scripts, multi-file source projects, Maven projects, and runnable JARs without requiring JBang.
 
 ## Features
 
-* **Automatic detection of JAR type**
+- Run `.java`, `.jsh`, and `.jar` files with a selected local JDK.
+- Compile Java 8 scripts and multi-file scripts with `javac`; use source-file launch mode on JDK 11+ when applicable.
+- Declare script dependencies, source files, and resources with `//DEPS`, `//SOURCES`, and `//FILES` directives.
+- Build regular or fat JARs, and package application images with `jlink` and `jpackage`.
+- Generate IDE project files, Maven/Spring project starters, and a Java tool template.
+- Export project dependencies or compact runtimes that include both `java` and `javac`.
 
-  * If the JAR contains `META-INF/dependencies-static.lib` → run with `java -jar`
-  * If the JAR contains `META-INF/dependencies.lib` → reconstruct classpath and run
-  * Otherwise → fallback to `java -jar`
-* **Classpath resolution**
+## Requirements
 
-  * Reads dependencies from `dependencies.lib` relative to the JAR location
-* **Cross-platform**
+- **To build ajava:** Go 1.25.1 or newer.
+- **To run Java programs:** a local JDK. JDK 8 is supported for compile-and-run; `.jsh` scripts require JDK 9 or newer.
+- **For Maven projects and transitive Maven dependencies:** Maven or a project Maven Wrapper.
+- **To export a compact runtime:** JDK 9 or newer with `jlink`.
 
-  * Works on Windows, Linux, and macOS
-* **Debug mode**
+## Install
 
-  * `-dryrun` option prints the `java` command without executing
+Build the CLI from source:
 
----
-
-## Installation
-
-Requirements:
-
-* JDK (with `java` in PATH)
-
-Build from source:
-
-```bash
-git clone https://github.com/bruceasu/asu-run-jar.git
-cd asu-run-jar
-go build -o asu-run-jar main.go
+```sh
+go build -o ajava ./cmd/ajava
 ```
 
-On Windows, the output will be `asu-run-jar.exe`.
+On Windows, use `go build -o ajava.exe ./cmd/ajava`.
 
----
+## Quick start
 
-## Usage
+Run Java source, JShell, or a JAR:
 
-```
-asu-run-jar [options] <path-to-jar> [-- args...]
-```
-
-### Options
-
-| Option    | Description                                   |
-| --------- | --------------------------------------------- |
-| `-dryrun` | Print the resolved `java` command without run |
-
-### Examples
-
-Run a JAR with automatic detection:
-
-```bash
-asu-run-jar bin/app.jar
+```sh
+ajava run Main.java -- input.txt
+ajava run script.jsh
+ajava run app.jar -- input.txt
 ```
 
-Dry-run mode:
+Choose a JDK by version or installation path:
 
-```bash
-asu-run-jar -dryrun bin/app.jar
+```sh
+ajava run --jdk 17 Main.java
+ajava run --jdk /path/to/jdk-21 Main.java
 ```
 
-Output:
+Build a project or create starter files:
 
-```
-java -cp bin/app.jar;bin/lib/a.jar;bin/lib/b.jar com.example.Main
-```
-
-Pass program arguments:
-
-```bash
-asu-run-jar bin/app.jar -- arg1 arg2
+```sh
+ajava build -src src -main app.Main -static
+ajava ide vsc ./my-app
+ajava project maven ./my-maven-app
+ajava new Tool.java
 ```
 
----
+## Commands
 
-## How It Works
+| Command | Purpose |
+|---------|---------|
+| `ajava run <file.java\|file.jsh\|file.jar>` | Run a Java source file, JShell script, or JAR |
+| `ajava build [options]` | Compile a source project and optionally package it |
+| `ajava ide <vsc\|eclipse\|idea> [directory]` | Generate IDE project configuration |
+| `ajava project <maven\|spring> [directory]` | Generate a Maven or Spring project |
+| `ajava new <File.java>` | Generate a single-file Java tool template |
+| `ajava export deps [options]` | Resolve and export project dependencies |
+| `ajava export jdk [options]` | Export a compact runtime with a compiler |
 
-1. **Fat-JAR (static)**
+Use `ajava --help` for the top-level usage and `ajava build -h` for build options.
 
-   * Detected by `META-INF/dependencies-static.lib`
-   * Runs with:
+## Documentation
 
-     ```bash
-     java -jar app.jar
-     ```
+- [Running Java files and scripts](docs/running.md): JDK selection, script directives, dependencies, working directories, and run examples.
+- [Building projects](docs/building.md): build options, project generation, dependency/runtime exports, packaging, and examples.
+- [JBang reference](docs/jdk25-jbang.md): JBang directives and examples, with notes comparing its behavior to Java source-file launch.
 
-2. **Standard JAR**
+## Examples
 
-   * Detected by `META-INF/dependencies.lib`
-   * Reads dependency list and builds classpath:
-
-     ```bash
-     java -cp app.jar;lib/a.jar;lib/b.jar com.example.Main
-     ```
-
-3. **Other JARs**
-
-   * Falls back to:
-
-     ```bash
-     java -jar app.jar
-     ```
-
----
-
-## Related Projects
-
-* **[asu-java-build](https://github.com/bruceasu/asu-java-build)**: The companion build tool that compiles, packages, and manages dependencies for Java projects.
-
----
-
-## License
-
-```
-Apache License 2.0
-
-Copyright 2025 BruceAsu
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-```
-
-
+See [`examples/`](examples/) for sample projects and Java scripts.

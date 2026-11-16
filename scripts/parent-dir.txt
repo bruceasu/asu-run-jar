@@ -1,0 +1,30 @@
+# powershell
+#
+#$PSScriptRoot 是当前脚本所在目录，不受你从哪个目录启动脚本影响。
+#
+
+$parentDir = Split-Path -Parent $PSScriptRoot
+Set-Location $parentDir
+
+# 在父目录执行命令
+& .\build.bat
+
+#如果希望命令结束后恢复原目录，用 Push-Location / Pop-Location：
+
+Push-Location (Split-Path -Parent $PSScriptRoot)
+try {
+    & .\build.bat
+} finally {
+    Pop-Location
+}
+
+
+
+@echo off
+setlocal
+set CWD=%CD%
+cd /d %~dp0..
+
+
+cd /d %CWD%
+endlocal

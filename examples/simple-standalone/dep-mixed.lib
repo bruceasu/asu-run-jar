@@ -1,0 +1,7 @@
+# 混合路径格式测试
+
+# Maven 坐标
+com.google.code.gson:gson:2.10.1
+
+# 如果你有真实的 Windows 路径，可以取消下面的注释测试
+# C:\libs\my-custom-lib.jar

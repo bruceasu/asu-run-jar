@@ -1,0 +1,22 @@
+# 路径兼容性测试文件
+
+# ========== Maven 坐标格式测试 ==========
+com.google.code.gson:gson:2.10.1
+
+# ========== Windows 路径测试（需要取消注释并提供真实路径）==========
+# Windows 绝对路径（盘符+冒号）
+# C:\libs\custom-lib.jar
+# D:\projects\my-lib.jar
+
+# Windows 风格（正斜杠）
+# C:/libs/another-lib.jar
+
+# ========== Linux/Mac 路径测试 ==========
+# Linux 绝对路径
+# /home/user/libs/my-lib.jar
+# /usr/local/share/java/custom.jar
+
+# ========== 相对路径测试 ==========
+# libs/local.jar
+# ../shared/common.jar
+# .\windows-relative\lib.jar
